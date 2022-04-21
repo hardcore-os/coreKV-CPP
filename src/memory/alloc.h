@@ -35,12 +35,14 @@ class SimpleFreeListAlloc final {
     static constexpr uint32_t kAlignBytes = 8;           //按照8来对齐
     static constexpr uint32_t kSmallObjectBytes = 4096;  //小对象最大的字节数据
     static constexpr uint32_t kFreeListMaxNum = kSmallObjectBytes / kAlignBytes;
-
+    //当前可用内存起点
     char* free_list_start_pos_ = nullptr;
+    //当前可用内存终点
     char* free_list_end_pos_ = nullptr;
+    //总的内存大小，可以理解为bias
     int32_t heap_size_ = 0;
     FreeList* freelist_[kFreeListMaxNum] = {nullptr};
-
+    //用户获取当前内存分配量
     std::atomic<uint32_t> memory_usage_;
 };
 }  // namespace corekv

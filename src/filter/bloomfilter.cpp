@@ -71,12 +71,8 @@ bool BloomFilter::MayMatch(const std::string_view& key, int32_t start_pos,
       len = total_len - start_pos;
   }
   std::string_view bloom_filter(array + start_pos, len);
-
-
   const char* cur_array = bloom_filter.data();
-  // 最后一位是k的数值
-  const int32_t bits = (len) * 8;
-
+  const int32_t bits = len * 8;
   if (k_ > 30) {
     return true;
   }

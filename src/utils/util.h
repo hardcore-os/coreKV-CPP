@@ -13,6 +13,10 @@ namespace corekv
         void GetCurrentTimeString(std::string&output);
         int64_t GetCurrentTid();
         int64_t GetCurrentPid();
+        bool CheckLittleEndian();
+        uint32_t DecodeFixed32(const char* ptr);
+        //
+        uint32_t SimMurMurHash(const char *data, uint32_t len);
     } // namespace util
     
 } // namespace corekv

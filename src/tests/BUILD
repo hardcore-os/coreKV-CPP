@@ -15,3 +15,13 @@ cc_test(
            "//db:DbLib",
            "@googletest//:gtest_main"],
 )
+
+
+cc_test(
+    name = "bloomFilterTest",
+    srcs = glob(["bloomfilter_test.cpp"]),
+    copts = ["-std=c++17"],
+    deps = ["//utils:UtilsLib",
+           "//filter:FilterLib",
+           "@googletest//:gtest_main"],
+)

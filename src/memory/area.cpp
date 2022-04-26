@@ -13,21 +13,9 @@ void SimpleVectorAlloc::Deallocate(void*, int32_t) {
   //暂时不支持这个操作
 }
 char* SimpleVectorAlloc::AllocateFallback(uint32_t bytes) {
-  if (bytes > kBlockSize / 4) {
-    // Object is more than a quarter of our block size.  Allocate it separately
-    // to avoid wasting too much space in leftover bytes.
-    char* result = AllocateNewBlock(bytes);
-    return result;
-  }
-
-  // We waste the remaining space in the current block.
-  alloc_ptr_ = AllocateNewBlock(kBlockSize);
-  alloc_bytes_remaining_ = kBlockSize;
-
-  char* result = alloc_ptr_;
-  alloc_ptr_ += bytes;
-  alloc_bytes_remaining_ -= bytes;
-  return result;
+  AllocateNewBlock(bytes*2);
+  alloc_bytes_remaining_ += bytes*2;
+  return alloc_ptr_;
 }
 
 void* SimpleVectorAlloc::Allocate(uint32_t bytes) {
@@ -47,11 +35,8 @@ void* SimpleVectorAlloc::Allocate(uint32_t bytes) {
   } else {
     //如果不够我们开辟新内存
     AllocateFallback(bytes);
-    //再一次调用，将内存碎片充分利用
-    alloc_bytes_remaining_+=bytes;
     Allocate(bytes);
   }
-  assert((reinterpret_cast<uintptr_t>(result) & (align - 1)) == 0);
   return result;
 }
 

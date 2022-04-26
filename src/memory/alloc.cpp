@@ -152,7 +152,7 @@ void SimpleFreeListAlloc::Deallocate(void* address, int32_t n) {
     FreeList* p = (FreeList*)address;
     FreeList* volatile* cur_free_list = nullptr;
     memory_usage_.fetch_sub(n, std::memory_order_relaxed);
-    if (n > kAlignBytes) {
+    if (n > kSmallObjectBytes) {
       free(address);
 
       address = nullptr;

@@ -27,7 +27,6 @@ class SimpleVectorAlloc final {
   }
   void Deallocate(void* p, int32_t n);  //释放内存
  private:
-  static constexpr uint32_t kBlockSize = 4096;
   char* AllocateFallback(uint32_t bytes);
   char* AllocateNewBlock(uint32_t block_bytes);
 

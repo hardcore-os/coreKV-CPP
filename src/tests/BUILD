@@ -25,3 +25,13 @@ cc_test(
            "//filter:FilterLib",
            "@googletest//:gtest_main"],
 )
+
+
+cc_test(
+    name = "cacheTest",
+    srcs = glob(["cache_test.cpp"]),
+    copts = ["-std=c++17"],
+    deps = ["//utils:UtilsLib",
+           "//cache:CacheLib",
+           "@googletest//:gtest_main"],
+)

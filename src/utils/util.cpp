@@ -61,6 +61,18 @@ uint32_t DecodeFixed32(const char* ptr) {
             (static_cast<uint32_t>(static_cast<unsigned char>(ptr[3])) << 24));
   }
 }
+
+int64_t Next2Power(int64_t value) {
+  value--;
+  value |= value >> 1;
+  value |= value >> 2;
+  value |= value >> 4;
+  value |= value >> 8;
+  value |= value >> 16;
+  value |= value >> 32;
+  value++;
+  return value;
+}
 }  // namespace util
 
 }  // namespace corekv

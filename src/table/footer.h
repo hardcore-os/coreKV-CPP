@@ -12,8 +12,8 @@ class Footer final {
   void SetIndexBlockMetaData(const OffSetSize& index_block) {
     index_block_ = index_block;
   }
-  const OffSetSize& GetFilterBlockMetaData() { return filter_block_; }
-  const OffSetSize& GetIndexBlockMetaData() { return index_block_; }
+  const OffSetSize& GetFilterBlockMetaData() const { return filter_block_; }
+  const OffSetSize& GetIndexBlockMetaData() const { return index_block_; }
 
   std::string DebugString();
 

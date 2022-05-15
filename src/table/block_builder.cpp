@@ -1,8 +1,6 @@
 #include "block_builder.h"
 
 #include "../utils/codec.h"
-#include <iostream>
-using namespace std;
 namespace corekv {
 using namespace util;
 
@@ -52,10 +50,10 @@ void DataBlockBuilder::Add(const std::string_view& key,
   PutVarint32(&buffer_, shared);
   PutVarint32(&buffer_, non_shared_size);
   PutVarint32(&buffer_, value_size);
-   // 将当前的key信息序列化到buffer中
+  // 将当前的key信息序列化到buffer中
   buffer_.append(key.data() + shared, non_shared_size);
   buffer_.append(value.data(), value_size);
-   // 更新pre_key，因为下次我们需要使用他
+  // 更新pre_key，因为下次我们需要使用他
   pre_key_.assign(key.data(), current_key_size);
   ++restart_pointer_counter_;
 }
@@ -96,7 +94,7 @@ void FilterBlockBuilder::Finish() {
   if (Availabe() && !datas_.empty()) {
     // 先构建布隆过滤器
     CreateFilter();
-    // 序列化hash个数和bf本身数据
+    // // 序列化hash个数和bf本身数据
     buffer_ = policy_filter_->Data();
     util::PutFixed32(&buffer_, policy_filter_->GetMeta().hash_num);
   }

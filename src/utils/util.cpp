@@ -6,7 +6,7 @@
 
 #include <chrono>
 #include <iomanip>
-#include <iostream>
+
 namespace corekv {
 namespace util {
 uint64_t GetCurrentTime() {

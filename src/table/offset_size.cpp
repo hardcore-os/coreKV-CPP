@@ -1,7 +1,5 @@
 #include "offset_size.h"
-#include <iostream>
 #include "../utils/codec.h"
-using namespace std;
 namespace corekv {
 using namespace util;
 

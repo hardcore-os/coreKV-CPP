@@ -2,8 +2,6 @@
 
 #include "../utils/codec.h"
 #include "table_options.h"
-#include <iostream>
-using namespace std;
 namespace corekv {
 using namespace util;
 void Footer::EncodeTo(std::string* dst) {

@@ -13,7 +13,7 @@ class BloomFilter final : public FilterPolicy {
   const FilterPolicyMeta& GetMeta() override {
     return filter_policy_meta_;
   }
-  void CreateFilter(const std::string_view* keys, int32_t n) override;
+  void CreateFilter(const std::string* keys, int32_t n) override;
   bool MayMatch(const std::string_view& key, int32_t start_pos,
                 int32_t len) override;
   uint32_t Size() override { return bloomfilter_data_.size(); }

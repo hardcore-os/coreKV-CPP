@@ -30,7 +30,7 @@ void BloomFilter::CalcBloomBitsPerKey(int32_t entries_num, float positive) {
   bits_per_key_ = static_cast<int32_t>(ceilf(size / entries_num));
 }
 const char* BloomFilter::Name() { return "general_bloomfilter"; }
-void BloomFilter::CreateFilter(const std::string_view* keys, int32_t n) {
+void BloomFilter::CreateFilter(const std::string* keys, int32_t n) {
   if (n <= 0 || !keys) {
     return;
   }
@@ -94,7 +94,7 @@ bool BloomFilter::MayMatch(const std::string_view& key, int32_t start_pos,
 
 bool BloomFilter::MayMatch(const std::string_view& key,
                            const std::string_view& bf_datas) {
-  static constexpr uint32_t kFixedSize = 5;
+  static constexpr uint32_t kFixedSize = 4;
   // 先恢复k_
   const auto& size = bf_datas.size();
   if (size < kFixedSize || key.empty()) {

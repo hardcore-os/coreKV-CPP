@@ -52,7 +52,7 @@ class FilterBlockBuilder final {
   void Finish(); 
  private:
  std::string buffer_;
-  std::vector<std::string_view> datas_;
+  std::vector<std::string> datas_;
   FilterPolicy* policy_filter_ = nullptr;
 };
 }  // namespace corekv

@@ -1,10 +1,11 @@
 #include "table_builder.h"
+
+#include "../db/comparator.h"
 #include "../logger/log.h"
 #include "../utils/codec.h"
 #include "../utils/crc32.h"
 #include "footer.h"
 #include "table_options.h"
-#include "../db/comparator.h"
 namespace corekv {
 using namespace util;
 TableBuilder::TableBuilder(const Options& options, FileWriter* file_handler)
@@ -56,7 +57,6 @@ void TableBuilder::Flush() {
     need_create_index_block_ = true;
     // 针对剩余的还未刷盘的数据我们需要手动进行刷盘
     status_ = file_handler_->FlushBuffer();
-    
   }
 }
 
@@ -64,7 +64,7 @@ void TableBuilder::WriteDataBlock(DataBlockBuilder& data_block_builder,
                                   OffSetSize& offset_size) {
   // restart_pointer是在数据后面
   data_block_builder.Finish();
-  
+
   // 将所有的record数据打包
   const std::string& data = data_block_builder.Data();
   WriteBytesBlock(data, options_.block_compress_type, offset_size);
@@ -76,28 +76,26 @@ void TableBuilder::WriteBytesBlock(const std::string& datas,
                                    OffSetSize& offset_size) {
   std::string compress_data = datas;
   bool compress_success = false;
-  BlockCompressType type = BlockCompressType::kSnappyCompression;
+  BlockCompressType type = block_compress_type;
   switch (block_compress_type) {
-    case BlockCompressType::kSnappyCompression: {
+    case kSnappyCompression: {
       compress_data = datas;
       compress_success = true;
     } break;
     default:
-      type = BlockCompressType::kNonCompress;
+      type = kNonCompress;
       break;
   }
 
   offset_size.offset = block_offset_;
   offset_size.length = datas.size();
-  
-  const auto& crc32_value = crc32::GetCrc32(datas.data(), datas.size());
-  LOG(corekv::LogLevel::ERROR, "crc32_val:%d", crc32_value);
   // 追加我们的block数据
   status_ = file_handler_->Append(datas.data(), datas.size());
-  // 开始处理元数据部分[压缩类型+crc32]
   char trailer[kBlockTrailerSize];
   trailer[0] = static_cast<uint8_t>(type);
-  EncodeFixed32(trailer+1, crc32_value);
+  uint32_t crc = crc32::Value(datas.data(), datas.size());
+  crc = crc32::Extend(crc, trailer, 1);  // Extend crc to cover block type
+  EncodeFixed32(trailer + 1, crc32::Mask(crc));
   status_ = file_handler_->Append(trailer, kBlockTrailerSize);
   if (status_ == Status::kSuccess) {
     block_offset_ += offset_size.length + kBlockTrailerSize;
@@ -115,7 +113,7 @@ void TableBuilder::Finish() {
     // 这部分写的是filter即布隆过滤器部分数据
     filter_block_builder_.Finish();
     const auto& filter_block_data = filter_block_builder_.Data();
-    
+
     // 这部分不需要进行压缩，所以直接调用WriteBytesBlock函数
     WriteBytesBlock(filter_block_data, BlockCompressType::kNonCompress,
                     filter_block_offset);
@@ -124,7 +122,8 @@ void TableBuilder::Finish() {
     DataBlockBuilder meta_filter_block(&options_);
     OffsetBuilder filter_block_offset_builder;
     std::string handle_encoding_str;
-    filter_block_offset_builder.Encode(filter_block_offset, handle_encoding_str);
+    filter_block_offset_builder.Encode(filter_block_offset,
+                                       handle_encoding_str);
     meta_filter_block.Add(options_.filter_policy->Name(), handle_encoding_str);
     WriteDataBlock(meta_filter_block, meta_filter_block_offset);
   }
@@ -134,8 +133,7 @@ void TableBuilder::Finish() {
     // key)函数)
     // index中的value保存的是当前key在block中的偏移量和对应的block大小
     std::string output;
-    index_block_offset_size_builder_.Encode(pre_block_offset_size_,
-                                            output);
+    index_block_offset_size_builder_.Encode(pre_block_offset_size_, output);
     index_block_builder_.Add(pre_block_last_key_, output);
     need_create_index_block_ = false;
   }

@@ -19,11 +19,13 @@ TEST(table_builder_Test, Add) {
   log_config.log_type = corekv::LogType::CONSOLE;
   log_config.rotate_size = 100;
   corekv::Log::GetInstance()->InitLog(log_config);
+  static const std::string st = "d.txt";
 
   Options options;
+  options.block_compress_type = kSnappyCompression;
   options.filter_policy = std::make_unique<BloomFilter>(30);
   options.comparator = std::make_unique<ByteComparator>();
-  FileWriter* file_handler = new FileWriter("/Users/xiaxuefei/Desktop/code/corekv-go/coreKV-CPP/src/tests/d.txt");
+  FileWriter* file_handler = new FileWriter(st);
   TableBuilder* tb = new TableBuilder(options, file_handler);
   for (const auto& item : kTestKeys) {
     tb->Add(item, item);
@@ -31,9 +33,7 @@ TEST(table_builder_Test, Add) {
   tb->Finish();
   delete file_handler;
   delete tb;
-  std::string st = "/Users/xiaxuefei/Desktop/code/corekv-go/coreKV-CPP/src/tests/d.txt";
   FileReader file_reader(st);
-  Table tab;
-  tab.Open(options, &file_reader,FileTool::GetFileSize(st));
-  
+  Table tab(&options, &file_reader);
+  tab.Open(FileTool::GetFileSize(st));
 }

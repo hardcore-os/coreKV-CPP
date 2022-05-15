@@ -7,10 +7,10 @@ class FilterPolicy;
 class Comparator;
 }
 namespace corekv {
-
-enum class BlockCompressType : uint8_t {
-  kNonCompress = 0,
-  kSnappyCompression = 1
+  
+enum  BlockCompressType  {
+  kNonCompress = 0x0,
+  kSnappyCompression = 0x1
 };
 
 struct Options {

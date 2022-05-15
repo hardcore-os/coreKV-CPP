@@ -35,3 +35,26 @@ cc_test(
            "//cache:CacheLib",
            "@googletest//:gtest_main"],
 )
+
+cc_test(
+    name = "footerTest",
+    srcs = glob(["footer_test.cpp"]),
+    copts = ["-std=c++17"],
+    deps = ["//utils:UtilsLib",
+           "//table:TableLib",
+           "@googletest//:gtest_main"],
+)
+
+
+cc_test(
+    name = "tableBuilderTest",
+    srcs = glob(["table_builder_test.cpp"]),
+    copts = ["-std=c++17"],
+    deps = ["//utils:UtilsLib",
+           "//table:TableLib",
+           "//db:DbLib",
+           "//logger:LogLib",
+           "//file:FileLib",
+           "//filter:FilterLib",
+           "@googletest//:gtest_main"],
+)

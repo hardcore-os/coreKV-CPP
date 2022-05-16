@@ -6,6 +6,7 @@ cc_library(
     copts = ["-std=c++17"],
     deps = ["//utils:UtilsLib",
     "//db:DbLib",
+    "//cache:CacheLib",
     "//filter:FilterLib",
     "//file:FileLib"],
     visibility = ["//visibility:public"],

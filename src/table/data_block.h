@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <string_view>
+#include <memory>
 #include "../db/iterator.h"
 namespace corekv {
 class Comparator;
@@ -13,7 +14,7 @@ class DataBlock {
   DataBlock& operator=(const DataBlock&) = delete;
   ~DataBlock();
   size_t size() const { return size_; }
-  Iterator* NewIterator(Comparator* comparator);
+  Iterator* NewIterator(std::shared_ptr<Comparator> comparator);
 
  private:
   class Iter;

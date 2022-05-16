@@ -1,5 +1,5 @@
 #include "data_block.h"
-
+#include <memory>
 #include "../db/comparator.h"
 #include "../utils/codec.h"
 namespace corekv {
@@ -52,7 +52,7 @@ static inline const char* DecodeEntry(const char* p, const char* limit,
 
 class DataBlock::Iter : public Iterator {
  private:
-  Comparator* comparator_;
+  std::shared_ptr<Comparator> comparator_;
   // data是整个数据开始计算的
   const char* const data_;  // underlying block contents
   // 重启点开始的位置
@@ -96,7 +96,7 @@ class DataBlock::Iter : public Iterator {
   }
 
  public:
-  Iter(Comparator* comparator, const char* data, uint32_t restarts,
+  Iter(std::shared_ptr<Comparator> comparator, const char* data, uint32_t restarts,
        uint32_t num_restarts)
       : comparator_(comparator),
         data_(data),
@@ -107,9 +107,6 @@ class DataBlock::Iter : public Iterator {
     assert(num_restarts_ > 0);
   }
   ~Iter() {
-    if (!comparator_) {
-      delete comparator_;
-    }
   }
   bool Valid() const override { return current_ < restarts_; }
   DBStatus status() const override { return status_; }
@@ -252,7 +249,7 @@ class DataBlock::Iter : public Iterator {
   }
 };
 
-Iterator* DataBlock::NewIterator(Comparator* comparator) {
+Iterator* DataBlock::NewIterator(std::shared_ptr<Comparator> comparator) {
   if (size_ < sizeof(uint32_t)) {
     return NewErrorIterator(Status::kInterupt);
   }

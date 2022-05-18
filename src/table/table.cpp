@@ -79,6 +79,7 @@ void Table::ReadFilter(const std::string_view& filter_handle_value) {
   OffsetBuilder offset_builder;
   offset_builder.Decode(filter_handle_value.data(), offset_size);
   ReadBlock(offset_size, bf_);
+  bf_.resize(offset_size.length);
 }
 static void DeleteCachedBlock(const uint64_t& key, void* value) {
   DataBlock* block = reinterpret_cast<DataBlock*>(value);

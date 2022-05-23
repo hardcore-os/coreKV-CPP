@@ -6,7 +6,7 @@
 
 #include <chrono>
 #include <iomanip>
-#include <iostream>
+
 namespace corekv {
 namespace util {
 uint64_t GetCurrentTime() {
@@ -49,12 +49,7 @@ uint32_t DecodeFixed32(const char* ptr) {
   if (!ptr) {
     return 0;
   }
-  if (CheckLittleEndian()) {
-    // Load the raw bytes
-    uint32_t result = 0;
-    memcpy(&result, ptr, sizeof(result));  // gcc optimizes this to a plain load
-    return result;
-  } else {
+  {
     return ((static_cast<uint32_t>(static_cast<unsigned char>(ptr[0]))) |
             (static_cast<uint32_t>(static_cast<unsigned char>(ptr[1])) << 8) |
             (static_cast<uint32_t>(static_cast<unsigned char>(ptr[2])) << 16) |

@@ -24,7 +24,11 @@ class Cache {
   virtual void RegistCleanHandle(
       std::function<void(const KeyType& key, ValueType* value)> destructor) = 0;
 };
-
+/*
+//多态使用方式
+Cache* base = new Cache();
+delete base;
+*/
 // 在这里使用分片方式来处理缓存
 template <typename KeyType, typename ValueType>
 class ShardCache final : public Cache<KeyType, ValueType> {
@@ -36,6 +40,10 @@ class ShardCache final : public Cache<KeyType, ValueType> {
           std::make_shared<LruCachePolicy<KeyType, ValueType, MutexLock>>(capacity);
     }
   }
+  /*
+  meta control block：ref_cnt，weak_cnt等等
+  data block:具体数据指针
+  */
   ~ShardCache() = default;
   const char* Name() const {
       return "shard.cache";

@@ -33,8 +33,9 @@ delete base;
 template <typename KeyType, typename ValueType>
 class ShardCache final : public Cache<KeyType, ValueType> {
  public:
-  ShardCache() = default;
   ShardCache(uint32_t capacity) {
+    // 提前分配好内存
+    cache_impl_.resize(kShardNum);
     for (int32_t index = 0; index < kShardNum; ++index) {
       cache_impl_[index] =
           std::make_shared<LruCachePolicy<KeyType, ValueType, MutexLock>>(capacity);

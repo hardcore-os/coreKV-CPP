@@ -114,9 +114,10 @@ void* SimpleFreeListAlloc::M_Refill(int32_t bytes) {
       cur = next;
       next = (FreeList*)((char*)next + bytes);  //下一个块的首地址
       if (index != real_block_count - 1) {
-        cur = cur->next;
+        cur->next = next;
       } else {
         cur->next = nullptr;
+        break;
       }
     }
   } while (0);

@@ -70,7 +70,7 @@ char* SimpleFreeListAlloc::M_ChunkAlloc(int32_t bytes, int32_t& nobjs) {
            index += kAlignBytes) {
         my_free_list = freelist_ + M_FreelistIndex(index);
         p = *my_free_list;
-        if (!p) {
+        if (p) {
           //说明找到了，此时在进行下一轮循环时候，我们就能直接返回
           *my_free_list = p->next;
           free_list_start_pos_ = (char*)p;

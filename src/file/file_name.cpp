@@ -2,15 +2,15 @@
 namespace corekv {
 namespace {
 
-std::string MakeFileName(uint64_t number,
-                                const char* suffix) {
-  char buf[100]={0};
+std::string MakeFileName(uint64_t number, const char* suffix) {
+  char buf[100] = {0};
   std::snprintf(buf, sizeof(buf), "%06llu.%s",
                 static_cast<unsigned long long>(number), suffix);
   return buf;
 }
-}
-std::string FileName::DescriptorFileName(const std::string& dbname, const std::string&file_name) {
+}  // namespace
+std::string FileName::DescriptorFileName(const std::string& dbname,
+                                         const std::string& file_name) {
   if (!dbname.empty()) {
     std::string ch = dbname.back() != '/' ? "" : "/";
     return dbname + ch + file_name;

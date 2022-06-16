@@ -13,8 +13,9 @@ void SimpleVectorAlloc::Deallocate(void*, int32_t) {
   //暂时不支持这个操作
 }
 char* SimpleVectorAlloc::AllocateFallback(uint32_t bytes) {
-  AllocateNewBlock(bytes*2);
-  alloc_bytes_remaining_ += bytes*2;
+  auto tmp_ptr = AllocateNewBlock(bytes * 2);
+  if (!alloc_ptr_) alloc_ptr_ = tmp_ptr;
+  alloc_bytes_remaining_ += bytes * 2;
   return alloc_ptr_;
 }
 
@@ -35,7 +36,7 @@ void* SimpleVectorAlloc::Allocate(uint32_t bytes) {
   } else {
     //如果不够我们开辟新内存
     AllocateFallback(bytes);
-    Allocate(bytes);
+    return Allocate(bytes);
   }
   return result;
 }

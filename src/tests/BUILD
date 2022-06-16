@@ -58,3 +58,15 @@ cc_test(
            "//filter:FilterLib",
            "@googletest//:gtest_main"],
 )
+cc_test(
+    name = "blockIterTest",
+    srcs = glob(["block_iter_test.cpp"]),
+    copts = ["-std=c++17"],
+    deps = ["//utils:UtilsLib",
+           "//table:TableLib",
+           "//db:DbLib",
+           "//logger:LogLib",
+           "//file:FileLib",
+           "//filter:FilterLib",
+           "@googletest//:gtest_main"],
+)

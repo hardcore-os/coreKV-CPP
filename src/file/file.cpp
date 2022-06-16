@@ -1,6 +1,7 @@
 #include "file.h"
 
 #include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/errno.h>
 #include <sys/stat.h>
@@ -9,7 +10,7 @@
 
 #include <cassert>
 #include <cmath>
-#include <stdio.h>
+#include <cstring>
 
 #include "../logger/log.h"
 namespace corekv {
@@ -113,8 +114,7 @@ void FileWriter::Close() {
     fd_ = -1;
   }
 }
-FileWriter::~FileWriter() {
-}
+FileWriter::~FileWriter() {}
 
 // file_reader
 FileReader::~FileReader() {
@@ -130,9 +130,9 @@ FileReader::FileReader(const std::string& path_name) {
   } else {
     fd_ = open(path_name.data(), O_RDONLY);
   }
-  
 }
-DBStatus FileReader::Read(uint64_t offset, size_t n, std::string* result) const {
+DBStatus FileReader::Read(uint64_t offset, size_t n,
+                          std::string* result) const {
   if (!result) {
     return Status::kInvalidObject;
   }

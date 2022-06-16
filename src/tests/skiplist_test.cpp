@@ -1,10 +1,10 @@
-#include <iostream>
-#include <string>
-#include <vector>
+#include "db/skiplist.h"
 
 #include <gtest/gtest.h>
 
-#include "db/skiplist.h"
+#include <iostream>
+#include <string>
+#include <vector>
 
 #include "db/comparator.h"
 #include "logger/log.h"
@@ -14,6 +14,10 @@ using namespace std;
 using namespace corekv;
 static const vector<string> kTestKeys = {"corekv", "corekv1", "corekv2"};
 TEST(skiplistTest, Insert) {
+  corekv::LogConfig log_config;
+  log_config.log_type = corekv::LogType::CONSOLE;
+  log_config.rotate_size = 100;
+  corekv::Log::GetInstance()->InitLog(log_config);
   using Table = SkipList<const char*, ByteComparator, SimpleVectorAlloc>;
   ByteComparator byte_comparator;
   Table tb(byte_comparator);

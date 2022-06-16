@@ -62,19 +62,18 @@ void AysncFileAppender::Rotate() {
   static const std::string kDefaultLogPrefix = "corekv.";
   const auto &new_filename =
       log_config_.log_path + kDefaultLogPrefix + output + ".log";
+  rename(active_file_name_.c_str(), new_filename.c_str());
 
   //新创建的文件，所以重新计算
   cur_file_size = 0;
+  Close();
   int fd = open(active_file_name_.data(), O_CREAT | O_WRONLY | O_APPEND, 0644);
   if (fd == -1) {
     fprintf(stderr, "open log file %s error - %s\n", active_file_name_.c_str(),
             strerror(errno));
     return;
   }
-  Close();
   fd_ = fd;
-
-  rename(active_file_name_.c_str(), new_filename.c_str());
 }
 void AysncFileAppender::Close() {
   if (fd_ != -1) {

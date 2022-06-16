@@ -70,7 +70,7 @@ char* SimpleFreeListAlloc::M_ChunkAlloc(int32_t bytes, int32_t& nobjs) {
            index += kAlignBytes) {
         my_free_list = freelist_ + M_FreelistIndex(index);
         p = *my_free_list;
-        if (!p) {
+        if (p) {
           //说明找到了，此时在进行下一轮循环时候，我们就能直接返回
           *my_free_list = p->next;
           free_list_start_pos_ = (char*)p;
@@ -114,9 +114,10 @@ void* SimpleFreeListAlloc::M_Refill(int32_t bytes) {
       cur = next;
       next = (FreeList*)((char*)next + bytes);  //下一个块的首地址
       if (index != real_block_count - 1) {
-        cur = cur->next;
+        cur->next = next;
       } else {
         cur->next = nullptr;
+        break;
       }
     }
   } while (0);

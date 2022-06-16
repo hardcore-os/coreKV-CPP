@@ -7,7 +7,6 @@
 #include <atomic>
 #include <new>
 
-
 #include "logger/log.h"
 #include "logger/log_level.h"
 #include "utils/random_util.h"
@@ -57,7 +56,7 @@ class SkipList final {
   }
   bool Contains(const _KeyType& key) {
     Node* node = FindGreaterOrEqual(key, nullptr);
-      return nullptr != node && Equal(key, node->key);
+    return nullptr != node && Equal(key, node->key);
   }
   bool Equal(const _KeyType& a, const _KeyType& b) {
     return comparator_.Compare(a, b) == 0;
@@ -66,9 +65,7 @@ class SkipList final {
  private:
   Node* NewNode(const _KeyType& key, int32_t height);
   int32_t RandomHeight();
-  int32_t GetMaxHeight() {
-    return cur_height_.load(std::memory_order_relaxed);
-  }
+  int32_t GetMaxHeight() { return cur_height_.load(std::memory_order_relaxed); }
   bool KeyIsAfterNode(const _KeyType& key, Node* n) {
     return (nullptr != n && comparator_.Compare(key, n->key) < 0);
   }
@@ -130,10 +127,10 @@ class SkipList final {
   }
 
  private:
- _KeyComparator comparator_;            //比较器
- Node* head_ = nullptr;
+  _KeyComparator comparator_;  //比较器
+  _Allocator arena_;           //内存管理对象
+  Node* head_ = nullptr;
   std::atomic<int32_t> cur_height_;  //当前有效的层数
-  _Allocator arena_;  //内存管理对象
   RandomUtil rnd_;
 };
 
@@ -174,8 +171,8 @@ struct SkipList<_KeyType, _KeyComparator, _Allocator>::Node {
 template <typename _KeyType, class _Comparator, typename _Allocator>
 SkipList<_KeyType, _Comparator, _Allocator>::SkipList(_Comparator cmp)
     : comparator_(cmp),
-      head_(NewNode(0, SkipListOption::kMaxHeight)),
-      cur_height_(1) {
+      cur_height_(1),
+      head_(NewNode(0, SkipListOption::kMaxHeight)) {
   for (int i = 0; i < cur_height_; i++) {
     head_->SetNext(i, nullptr);
   }
@@ -188,7 +185,7 @@ SkipList<_KeyType, _Comparator, _Allocator>::NewNode(const _KeyType& key,
   char* node_memory = (char*)arena_.Allocate(
       sizeof(Node) + sizeof(std::atomic<Node*>) * (height - 1));
   //定位new写法
-  return new (node_memory)Node(key);
+  return new (node_memory) Node(key);
 }
 
 template <typename _KeyType, typename _Comparator, typename _Allocator>

@@ -96,8 +96,8 @@ class DataBlock::Iter : public Iterator {
   }
 
  public:
-  Iter(std::shared_ptr<Comparator> comparator, const char* data, uint32_t restarts,
-       uint32_t num_restarts)
+  Iter(std::shared_ptr<Comparator> comparator, const char* data,
+       uint32_t restarts, uint32_t num_restarts)
       : comparator_(comparator),
         data_(data),
         restarts_(restarts),
@@ -106,8 +106,7 @@ class DataBlock::Iter : public Iterator {
         restart_index_(num_restarts_) {
     assert(num_restarts_ > 0);
   }
-  ~Iter() {
-  }
+  ~Iter() {}
   bool Valid() const override { return current_ < restarts_; }
   DBStatus status() const override { return status_; }
   std::string_view key() const override {
@@ -239,6 +238,7 @@ class DataBlock::Iter : public Iterator {
       key_.resize(shared);
       key_.append(p, non_shared);
       value_ = std::string(p + non_shared, value_length);
+      offset_ = (p - data_) + non_shared + value_length;
       // 更新restart_index_指针，到当前value所在的重启点数据的前一个
       while (restart_index_ + 1 < num_restarts_ &&
              GetRestartPoint(restart_index_ + 1) < current_) {

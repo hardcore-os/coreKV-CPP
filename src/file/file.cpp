@@ -13,7 +13,7 @@
 
 #include "../logger/log.h"
 namespace corekv {
-FileWriter::FileWriter(const std::string& path_name) {
+FileWriter::FileWriter(const std::string& path_name, bool append) {
   std::string::size_type separator_pos = path_name.rfind('/');
   if (separator_pos == std::string::npos) {
     //那说明是当前路径
@@ -23,7 +23,13 @@ FileWriter::FileWriter(const std::string& path_name) {
       mkdir(dir_path.data(), 0777);
     }
   }
-  fd_ = ::open(path_name.data(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+  int32_t mode = O_CREAT | O_WRONLY;
+  if (append) {
+    mode |= O_APPEND;
+  } else {
+    mode |= O_TRUNC;
+  }
+  fd_ = ::open(path_name.data(), mode, 0644);
   assert(::access(path_name.c_str(), F_OK) == 0);
 }
 
@@ -109,7 +115,6 @@ void FileWriter::Close() {
 }
 FileWriter::~FileWriter() {
 }
-void FileWriter::DeleteFile() { ::unlink(file_name_.c_str()); }
 
 // file_reader
 FileReader::~FileReader() {
@@ -149,4 +154,44 @@ uint64_t FileTool::GetFileSize(const std::string_view& path) {
   }
   return file_stat.st_size;
 }
+bool FileTool::Exist(std::string_view path) {
+  return !path.empty() && (::access(path_name.c_str(), F_OK) == 0);
+}
+bool FileTool::Rename(std::string_view from, std::string_view to) {
+  if (from.empty() || to.empty()) {
+    return false;
+  }
+  if (std::rename(from.data(), to.data()) != 0) {
+      LOG(ERROR, "rename failed, code = [%d]", errno);
+
+    return false;
+  }
+  return true;
+}
+
+  bool RemoveFile(const std::string& filename) override {
+    if (::unlink(filename.c_str()) != 0) {
+      LOG(ERROR, "RemoveFile failed, code = [%d]", errno);
+
+      return false;
+    }
+    return true
+  }
+
+  bool CreateDir(const std::string& dirname)  {
+    if (::mkdir(dirname.c_str(), 0755) != 0) {
+      LOG(ERROR, "CreateDir failed, code = [%d]", errno);
+      return PosixError(dirname, errno);
+    }
+    return Status::OK();
+  }
+
+  bool RemoveDir(const std::string& dirname) {
+    if (::rmdir(dirname.c_str()) != 0) {
+      LOG(ERROR, "RemoveDir failed, code = [%d]", errno);
+      return false;
+    }
+    return true;
+  }
+
 }  // namespace corekv

@@ -5,7 +5,6 @@ cc_library(
     hdrs = glob(["**/*.h"]),
     copts = ["-std=c++17"],
     deps = ["//utils:UtilsLib",
-    "//db:DbLib",
     "//cache:CacheLib",
     "//filter:FilterLib",
     "//file:FileLib"],

@@ -173,7 +173,7 @@ SkipList<_KeyType, _Comparator, _Allocator>::SkipList(_Comparator cmp)
     : comparator_(cmp),
       cur_height_(1),
       head_(NewNode(0, SkipListOption::kMaxHeight)) {
-  for (int i = 0; i < cur_height_; i++) {
+  for (int i = 0; i < SkipListOption::kMaxHeight; i++) {
     head_->SetNext(i, nullptr);
   }
 }

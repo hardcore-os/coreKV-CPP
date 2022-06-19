@@ -67,7 +67,7 @@ class SkipList final {
   int32_t RandomHeight();
   int32_t GetMaxHeight() { return cur_height_.load(std::memory_order_relaxed); }
   bool KeyIsAfterNode(const _KeyType& key, Node* n) {
-    return (nullptr != n && comparator_.Compare(key, n->key) < 0);
+    return (nullptr != n && comparator_.Compare( n->key, key) < 0);
   }
   //找到一个大于等于key的node
   Node* FindGreaterOrEqual(const _KeyType& key, Node** prev) {
@@ -173,7 +173,7 @@ SkipList<_KeyType, _Comparator, _Allocator>::SkipList(_Comparator cmp)
     : comparator_(cmp),
       cur_height_(1),
       head_(NewNode(0, SkipListOption::kMaxHeight)) {
-  for (int i = 0; i < cur_height_; i++) {
+  for (int i = 0; i < SkipListOption::kMaxHeight; i++) {
     head_->SetNext(i, nullptr);
   }
 }

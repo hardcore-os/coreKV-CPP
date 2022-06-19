@@ -1,12 +1,11 @@
 
 cc_library(
-    name = "TableLib",
+    name = "ManifestLib",
     srcs = glob(["**/*.cpp"]),
     hdrs = glob(["**/*.h"]),
     copts = ["-std=c++17"],
-    deps = ["//utils:UtilsLib",
-    "//cache:CacheLib",
-    "//filter:FilterLib",
-    "//file:FileLib"],
+    deps = ["//file:FileLib",
+            "//logger:LogLib",
+            "//utils:UtilsLib"],
     visibility = ["//visibility:public"],
 )

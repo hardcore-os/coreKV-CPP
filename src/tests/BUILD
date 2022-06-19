@@ -70,3 +70,14 @@ cc_test(
            "//filter:FilterLib",
            "@googletest//:gtest_main"],
 )
+
+
+
+
+cc_test(
+    name = "manifestTest",
+    srcs = glob(["manifest_test.cpp"]),
+    copts = ["-std=c++17"],
+    deps = ["//manifest:ManifestLib",
+           "@googletest//:gtest_main"],
+)

@@ -9,12 +9,11 @@ namespace corekv {
 
 class FileWriter final {
  public:
-  FileWriter(const std::string& file_name);
+  FileWriter(const std::string& file_name, bool append = false);
   ~FileWriter();
   DBStatus Append(const char* data, int32_t len);
 
   DBStatus FlushBuffer();
-  void DeleteFile();
   void Sync();
   void Close();
  private:
@@ -41,5 +40,10 @@ class FileReader final {
 class FileTool final {
   public:
   static uint64_t GetFileSize(const std::string_view& path);
+  static bool Exist(std::string_view path );
+  static bool Rename(std::string_view from, std::string_view to);
+  static bool RemoveFile(const std::string& file_name);
+  static bool RemoveDir(const std::string& dirname);
+  static bool CreateDir(const std::string& dirname);
 };
 }  // namespace corekv

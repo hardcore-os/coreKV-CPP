@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace corekv;
-static const vector<string> kTestKeys = {"corekv", "corekv1", "corekv2"};
+static  vector<string> kTestKeys = {"corekv", "corekv1", "corekv2", "corekv3", "corekv4", "corekv5"};
 TEST(skiplistTest, Insert) {
   corekv::LogConfig log_config;
   log_config.log_type = corekv::LogType::CONSOLE;
@@ -21,10 +21,13 @@ TEST(skiplistTest, Insert) {
   using Table = SkipList<const char*, ByteComparator, SimpleVectorAlloc>;
   ByteComparator byte_comparator;
   Table tb(byte_comparator);
-  tb.Insert("corekv");
-  tb.Insert("corekv");
-  tb.Insert("kuihuabaodian");
-  for (const auto& item : kTestKeys) {
+  for (int i = 0; i < 100; i++) {
+    kTestKeys.emplace_back(std::to_string(i));
+  }
+  for (auto item : kTestKeys) {
+    tb.Insert(item.c_str());
+  }
+  for (auto& item : kTestKeys) {
     cout << "[ key:" << item << ", has_existed:" << tb.Contains(item.c_str())
          << " ]" << endl;
   }

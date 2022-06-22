@@ -1,9 +1,9 @@
 #ifndef UTILS_RANDOM_UTIL_H_
 #define UTILS_RANDOM_UTIL_H_
 #include <math.h>
-#include <time.h>
 
 #include <cstdint>
+#include <ctime>
 #include <random>
 namespace corekv {
 class RandomUtil final {
@@ -13,7 +13,7 @@ class RandomUtil final {
     if (seed_val_ > 0) {
       engine_.seed(seed_val_);
     } else {
-      engine_.seed(time(0));
+      engine_.seed(std::time(0));
     }
   }
   int64_t GetSimpleRandomNum() { return rand(); }

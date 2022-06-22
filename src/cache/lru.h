@@ -1,10 +1,10 @@
 #pragma once
 #include <functional>
+#include <iostream>
 #include <list>
 #include <string>
 #include <type_traits>
 #include <unordered_map>
-#include <iostream>
 
 #include "../utils/hash_util.h"
 #include "../utils/mutex.h"
@@ -109,15 +109,10 @@ class LruCachePolicy final : public CachePolicy<KeyType, ValueType> {
       return;
     }
     CacheNode<KeyType, ValueType>* node = *(iter->second);
-    FinishErase(node);
     //从user列表中删除该对象
     nodes_.erase(iter->second);
     index_.erase(node->key);
-    if (!index_.empty()) {
-      //更新头节点
-      ListIter begin_iter = nodes_.begin();
-      index_[(*begin_iter)->key] = nodes_.begin();
-    }
+    FinishErase(node);
   }
 
  private:

@@ -8,6 +8,6 @@ cc_binary(
     name = "AllocTest",
     srcs = glob(["test_all.cpp"]),
     deps = [
-        "//utils:UtilsLib",
+        "//srcs:CorekvLib",
         ":TestLib"],
 )

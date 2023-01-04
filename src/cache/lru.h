@@ -24,7 +24,6 @@ class LruCachePolicy final : public CachePolicy<KeyType, ValueType> {
     }
   }
   void Insert(const KeyType& key, ValueType* value, uint32_t ttl = 0) {
-    LockType lock_type;
     ScopedLockImpl<LockType> lock_guard(lock_type);
     CacheNode<KeyType, ValueType>* new_node =
         new CacheNode<KeyType, ValueType>();
@@ -61,7 +60,6 @@ class LruCachePolicy final : public CachePolicy<KeyType, ValueType> {
     }
   }
   CacheNode<KeyType, ValueType>* Get(const KeyType& key) {
-    LockType lock_type;
     ScopedLockImpl<LockType> lock_guard(lock_type);
     typename std::unordered_map<
         KeyType,
@@ -84,13 +82,11 @@ class LruCachePolicy final : public CachePolicy<KeyType, ValueType> {
     destructor_ = destructor;
   }
   void Release(CacheNode<KeyType, ValueType>* node) {
-    LockType lock_type;
     ScopedLockImpl<LockType> lock_guard(lock_type);
     Unref(node);
   }
   // 定期的来进行回收
   void Prune() {
-    LockType lock_type;
     ScopedLockImpl<LockType> lock_guard(lock_type);
     for (auto it = wait_erase_.begin(); it != wait_erase_.end(); ++it) {
       Unref((it->second));
@@ -98,7 +94,6 @@ class LruCachePolicy final : public CachePolicy<KeyType, ValueType> {
   }
   // 删除某个key对应的节点
   void Erase(const KeyType& key) {
-    LockType lock_type;
     ScopedLockImpl<LockType> lock_guard(lock_type);
     typename std::unordered_map<
         KeyType,
@@ -156,5 +151,7 @@ class LruCachePolicy final : public CachePolicy<KeyType, ValueType> {
       index_;
   std::unordered_map<KeyType, CacheNode<KeyType, ValueType>*> wait_erase_;
   std::function<void(const KeyType& key, ValueType* value)> destructor_;
+
+  LockType lock_type;
 };
 }  // namespace corekv

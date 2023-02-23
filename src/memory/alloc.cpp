@@ -6,14 +6,18 @@
 namespace corekv {
 
 SimpleFreeListAlloc::~SimpleFreeListAlloc() {
-  //释放二级内存，最后统一释放
-  if(!free_list_start_pos_) {
-    FreeList* p = (FreeList*)free_list_start_pos_;
-    while(p) {
-      FreeList* next = p->next;
-      free(p);
-      p = next;
+  //释放Freelists
+  for(int i = 0; i < sizeof(freelist_)/sizeof(freelist_[0]); i++) {
+    FreeList* cur = freelist_[i];
+    while (cur) {
+      FreeList* next = cur->next;
+      free(cur);
+      cur = next;
     }
+  }
+  //释放空闲内存池
+  if (free_list_start_pos_) {
+    free(free_list_start_pos_);
   }
 }
 int32_t SimpleFreeListAlloc::M_FreelistIndex(int32_t bytes) {

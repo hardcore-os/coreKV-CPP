@@ -7,11 +7,13 @@ namespace corekv {
 
 SimpleFreeListAlloc::~SimpleFreeListAlloc() {
   //释放Freelists
-  FreeList* cur = freelist_[0];
-  while (cur) {
-    FreeList* next = cur->next;
-    free(cur);
-    cur = next;
+  for(int i = 0; i < sizeof(freelist_)/sizeof(freelist_[0]); i++) {
+    FreeList* cur = freelist_[i];
+    while (cur) {
+      FreeList* next = cur->next;
+      free(cur);
+      cur = next;
+    }
   }
   //释放空闲内存池
   if (free_list_start_pos_) {
